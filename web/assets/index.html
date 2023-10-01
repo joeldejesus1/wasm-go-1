@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Web Form</title>
+</head>
+<body>
+    <h1>Simple Web Form</h1>
+
+    <div id="loading1">...Loading...</div>
+    <div id="ready1">
+        <form id="direction-form" method="post">
+            <label for="input1">Source Station:</label>
+            <input type="text" id="source" name="source" required>
+    
+            <br>
+    
+            <label for="input2">Destination Station:</label>
+            <input type="text" id="destination" name="destination" required>
+    
+            <br>
+    
+            <input type="submit" value="Submit">
+        </form>
+        <div id="answer1"></div>
+    </div>
+    <script>
+        const isSsl = window.location.protocol === "https:";
+        var getTcpOverWsUrl=function(){
+            return `${isSsl ? "wss:" : "ws:"}//${window.location.host}`
+            //return `${window.location.host}`
+        }
+    </script>
+    <script>
+        var loading=document.getElementById("loading1");
+        var ready=document.getElementById("ready1");
+        function toggleLoading() {
+            loading.style.display="block";
+            ready.style.display="none";
+        }
+        function toggleReady() {
+            console.log("marking ready")
+            loading.style.display="none";
+            ready.style.display="block";
+        }
+        toggleLoading();
+    </script>
+    <script src="wasm_exec.js"></script>
+    <script>
+        const go = new Go();
+        WebAssembly.instantiateStreaming(fetch("sw.wasm"), go.importObject).then((result) => {
+            go.run(result.instance);
+            toggleReady();
+        }).catch((e)=>{
+            loading.innerHTML=`error loading Go WASM: ${e}`;
+            toggleLoading();
+        });
+    </script>
+</body>
+</html>

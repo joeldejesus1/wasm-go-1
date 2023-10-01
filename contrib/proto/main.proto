@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+option go_package = "github.com/joeldejesus1/wasm-go-1/proto/subway";
+
+package subway;
+
+
+service SubwayMap{
+    rpc AskDirection(DirectionRequest) returns (DirectionResponse) {}
+}
+
+enum Station {
+    A = 0;
+    B = 1;
+    C = 2;
+    D = 3;
+}
+
+message Segment {
+    Station source = 1;
+    Station destination = 2;
+}
+
+// [Segment; 2B?]
+message DirectionRequest{
+    Segment segment = 1;
+}
+
+// what data you see as the client coming from the server 
+// <--[repeated; n segments][Segment_1; 2B][Segment_2; 2B][Segment_3; 2B]....[Segment_n; 2B]
+message DirectionResponse {
+    // repeated means array of segments
+    repeated Segment direction_list = 1;
+}
+
