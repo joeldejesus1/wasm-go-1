@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"embed"
+	"errors"
 	"fmt"
 	"net"
 	"net/http"
@@ -24,9 +25,6 @@ type external struct {
 	wsl *wasmws.WebSockListener
 }
 
-type httpExternal struct {
-}
-
 type Configuration struct {
 	Port uint16
 }
@@ -42,13 +40,12 @@ func Run(
 		return err
 	}
 	// Hi everyone!
-	s := grpc.NewServer()
-
-	pbs.RegisterSubwayMapServer(s, e1)
+	grpcServer := grpc.NewServer()
 
 	// server static files
 	wsl := wasmws.NewWebSocketListener(ctx)
 	e1 := external{ctx: ctx, wsl: wsl}
+	pbs.RegisterSubwayMapServer(grpcServer, e1)
 	httpServer := &http.Server{
 		Addr:        fmt.Sprintf(":%d", config.Port),
 		Handler:     e1,
@@ -56,11 +53,12 @@ func Run(
 	}
 
 	go func() {
-		if err := s.Serve(wsl); err != nil {
+		if err := grpcServer.Serve(wsl); err != nil {
 			log.Printf("ERROR: Failed to serve gRPC connections; Details: %s", err)
 		}
 	}()
 
+	return httpServer.Serve(l)
 }
 
 // 1. static files 2. gRPC
@@ -94,4 +92,13 @@ func (e1 external) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		http.ServeContent(w, r, fileInfo.Name(), fileInfo.ModTime(), file)
 	}
+}
+
+func (e1 external) AskDirection(
+	ctx context.Context,
+	req *pbs.DirectionRequest,
+) (resp *pbs.DirectionResponse, err error) {
+	log.Infof("someone is connecting: %+v", req)
+	err = errors.New("not implemented yet")
+	return
 }
