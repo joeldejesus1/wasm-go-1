@@ -39,6 +39,10 @@ func Run(
 	if err != nil {
 		return err
 	}
+	go func(){
+		<-ctx.Done()
+		l.Close()
+	}()
 	// Hi everyone!
 	grpcServer := grpc.NewServer()
 
