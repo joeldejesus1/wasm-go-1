@@ -18,7 +18,7 @@ func main() {
 	go loopSignal(ctx, cancel, signalC)
 
 	err := web.Run(ctx, &web.Configuration{
-		Port: 18080,
+		Port: 8080,
 	})
 	if err != nil {
 		panic(err)

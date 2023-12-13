@@ -5,6 +5,7 @@ We create a simple website that lets a user ask for directions in a simple subwa
 # Build
 
 ```bash
+./contrib/proto.sh
 make
 ```
 
