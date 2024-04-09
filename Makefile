@@ -12,6 +12,12 @@ else
 	LDFLAGS :=
 endif
 
+ifeq ($(uname -o | awk '{print tolower($0)}'), "linux")
+	OS := linux
+else
+	OS := darwin
+endif
+
 
 all: build
 
@@ -20,7 +26,7 @@ all: build
 build: setup wasm server
 
 server: setup wasm ./cmd/main.go
-	GOOS=linux GOARCH=amd64 $(GO_BIN) build $(GOFLAGS) -ldflags="$(LDFLAGS)" -mod=readonly -buildvcs=false -o bin/web.server github.com/joeldejesus1/wasm-go-1/cmd
+	GOOS=$(OS) GOARCH=amd64 $(GO_BIN) build $(GOFLAGS) -ldflags="$(LDFLAGS)" -mod=readonly -buildvcs=false -o bin/web.server github.com/joeldejesus1/wasm-go-1/cmd
 
 wasm: setup ./wasm/main.go
 	GOOS=js GOARCH=wasm $(GO_BIN) build $(GOFLAGS) -ldflags="$(LDFLAGS)" -mod=readonly -buildvcs=false -o web/assets/sw.wasm github.com/joeldejesus1/wasm-go-1/wasm
