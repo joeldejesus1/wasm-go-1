@@ -17,8 +17,6 @@ test_all(){
 }
 
 build_go(){
-    go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
-    go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
     rm -r $PROTO_GO_DIR 2>>/dev/null || true
     $PROTO_BIN --proto_path=${PROTO_DIR} --go-grpc_out=. --go_out=. $@
     mv "github.com/joeldejesus1/wasm-go-1/proto" ./
