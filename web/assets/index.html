@@ -26,6 +26,7 @@
         <div id="answer1"></div>
     </div>
     <script>
+        var doWork=function(){};
         const isSsl = window.location.protocol === "https:";
         var getTcpOverWsUrl=function(){
             return `${isSsl ? "wss:" : "ws:"}//${window.location.host}`
@@ -52,6 +53,23 @@
         WebAssembly.instantiateStreaming(fetch("sw.wasm"), go.importObject).then((result) => {
             go.run(result.instance);
             toggleReady();
+            var form = document.getElementById("direction-form");
+            console.log("loading form")
+            form.addEventListener("submit", function(event) {
+                console.error("why here!")
+                event.preventDefault(); // Prevent the default form submission
+                var answer = document.getElementById("answer1");
+                var source = document.getElementById("source").value;
+                var destination = document.getElementById("destination").value;
+                console.error(`searching for direction from ${source} to ${destination}`);
+                submitDirectionRequest(source,destination).then((ans)=>{
+                    answer.innerHTML=ans;
+                }).catch((e)=>{
+                    answer.innerHTML=e;
+                });
+                // Your JavaScript logic here
+                alert("Form submitted!");
+            });
         }).catch((e)=>{
             loading.innerHTML=`error loading Go WASM: ${e}`;
             toggleLoading();
