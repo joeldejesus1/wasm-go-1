@@ -48,7 +48,7 @@ func main() {
 	// get returned ????
 	js.Global().Set("submitDirectionRequest", SetupAccessor(func(mainArgs []js.Value) (interface{}, error) {
 		// blocking is ok here
-		log.Print("submit direction request")
+		log.Printf("in Go: submit direction request; args: %+v", mainArgs)
 		if len(mainArgs) != 2 {
 			return nil, errors.New("missing destination and source")
 		}
@@ -61,7 +61,7 @@ func main() {
 		if err != nil {
 			return nil, err
 		}
-		destination, err := convertStation(mainArgs[0].String())
+		destination, err := convertStation(mainArgs[1].String())
 		if err != nil {
 			return nil, err
 		}

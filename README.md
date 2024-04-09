@@ -4,7 +4,14 @@ We create a simple website that lets a user ask for directions in a simple subwa
 
 # Build
 
-Ensure that you have the minimum required version of Golang installed as indicated in the go.mod file, and that GOROOT and GOPATH are correctly set in your env.
+Install dependencies:
+
+```bash
+go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+```
+
+Then, compile the protobufs.
 
 ```bash
 ./contrib/proto.sh
